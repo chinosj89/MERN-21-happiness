@@ -1,10 +1,10 @@
-const { User, Book } = require('../models');
+const { User } = require('../models');
 
 const resolvers = {
     Query: {
-        getSingleUser: async (parent, { _id }) => {
-            const params = _id ? { _id } : {};
-            return User.findById(params);
+        getSingleUser: async (parent, { _id, username }) => {
+            const params = _id ? { _id } : { username };
+            return User.findOne(params);
         },
     },
     Mutation: {
@@ -12,14 +12,15 @@ const resolvers = {
             const user = await User.create(args);
             return user
         },
-        saveBook: async (parent, bookId) => {
+        saveBook: async (parent, { userId, bookInput }, context) => {
             const user = await User.findOneAndUpdate(
-                { _id: bookId },
-                { $push: { savedBooks: { _id: bookId } } },
+                { _id: userId },
+                { $push: { savedBooks: bookInput } },
                 { new: true }
             )
+            return user
         },
-        deleteBook: async (parent, bookId) => {
+        deleteBook: async (parent, bookInput, context) => {
             const user = await User.findOneAndUpdate(
                 { _id: bookId },
                 { $pull: { savedBooks: { _id: bookId } } },
