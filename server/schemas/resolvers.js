@@ -14,6 +14,10 @@ const resolvers = {
         },
         login: async (parent, { email, password }) => {
             const user = await User.findOne({ email });
+            const correctPw = await user.isCorrectPassword(password);
+            if (!correctPw) {
+                throw new AuthenticationError("Invalid Password!")
+            }
             return user
         },
         saveBook: async (parent, { userId, bookInput }) => {

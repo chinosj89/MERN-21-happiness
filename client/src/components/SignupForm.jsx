@@ -5,7 +5,7 @@ import { ADD_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
 
 const SignupForm = () => {
-  const [addNewUser] = useMutation(ADD_USER);
+  const [addUser] = useMutation(ADD_USER);
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
   // set state for form validation
@@ -29,7 +29,7 @@ const SignupForm = () => {
     }
 
     try {
-      const response = await addNewUser(userFormData);
+      const response = await addUser(userFormData);
 
       if (!response.ok) {
         throw new Error('something went wrong!');
