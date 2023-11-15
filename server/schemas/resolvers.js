@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Book } = require('../models');
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
 const resolvers = {
@@ -27,22 +27,30 @@ const resolvers = {
             return { token, user };
 
         },
-        saveBook: async (parent, { userId, bookInput }) => {
-            const user = await User.findOneAndUpdate(
-                { _id: userId },
-                { $push: { savedBooks: bookInput } },
-                { new: true }
-            )
-            return user
+        // implement context learned from Stu-22-review
+        saveBook: async (parent, { bookInput }, context) => {
+            if (context.user) {
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $addToSet: { savedBooks: bookInput } },
+                    { new: true }
+                ).populate("savedBooks");
+                console.log("Book Input: ", bookInput);
+                console.log("User's saved books:", updatedUser);
+                return updatedUser;
+            }
         },
-        removeBook: async (parent, { userId, bookId }) => {
-            const user = await User.findOneAndUpdate(
-                { _id: userId },
-                { $pull: { savedBooks: { bookId: bookId } } },
-                { new: true }
-            );
+        // implement context learned from Stu-22-review
+        removeBook: async (parent, { bookId }, context) => {
+            if (context.user) {
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $pull: { savedBooks: { bookId: bookId } } },
+                    { new: true }
+                ).populate("savedBooks");
 
-            return user;
+                return updatedUser;
+            }
         },
     },
 }
