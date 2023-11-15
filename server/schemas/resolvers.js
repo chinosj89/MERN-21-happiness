@@ -2,10 +2,15 @@ const { User, Book } = require('../models');
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
 const resolvers = {
+    // implementing context
     Query: {
-        me: async (parent, args) => {
-            const user = await User.findOne(args)
-            return user
+        me: async (parent, args, context) => {
+            if (context.user) {
+                const userData = await User.findOne({ _id: context.user._id })
+                    .select('-password');
+                console.log('User Data:', userData);
+                return userData;
+            }
         },
     },
     Mutation: {
@@ -48,7 +53,7 @@ const resolvers = {
                     { $pull: { savedBooks: { bookId: bookId } } },
                     { new: true }
                 ).populate("savedBooks");
-
+                console.log('deleted some books. see if it worked', updatedUser)
                 return updatedUser;
             }
         },
