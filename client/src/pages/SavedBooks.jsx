@@ -17,7 +17,7 @@ import { REMOVE_BOOK } from '../utils/mutations';
 const SavedBooks = () => {
 
   const { loading, data } = useQuery(GET_ME);
-
+  // refetch made data query instant
   const [removeBook] = useMutation(REMOVE_BOOK, {
     refetchQueries: [{ query: GET_ME }],
   })
