@@ -7,6 +7,9 @@
   ## Description
   This project is to test our skills for to implement graphql in our mern application
   <!-- Add a screenshot of your application here -->
+  ![Alt text](./public/Capture.png)
+  ## Deployed Site 
+  https://powerful-lake-38678-121defdf325d.herokuapp.com/
   ## Table of Contents
   - [Installation](#installation)
   - [Usage](#usage)
